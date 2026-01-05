@@ -22,7 +22,7 @@ public class ProductController {
 
 @GetMapping("/")
     public String home(){
-    return "Welcome to Home Page";
+    return " Hi  Welcome to Home Page";
 }
 
 
