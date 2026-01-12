@@ -20,9 +20,19 @@ public class ProductService {
 
     }
 
+    public List<Product> getProductsForHome(String city) {
+        return repo.findByCitySafe(city);
+    }
+
+
+
     public Product getProductById(int id)  {
         return repo.findById( id).orElse(null);
     }
+    public List<Product> getProductsByCityAndCategory(String city, String category) {
+        return repo.findByCityIgnoreCaseAndCategoryIgnoreCase(city, category);
+    }
+
 
 
 

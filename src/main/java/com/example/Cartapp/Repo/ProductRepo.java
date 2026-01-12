@@ -3,6 +3,7 @@ package com.example.Cartapp.Repo;
 import com.example.Cartapp.Model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,18 @@ public interface ProductRepo  extends JpaRepository<Product,Integer> {
             "LOWER(p.brand) LIKE LOWER (CONCAT('%', :keyword, '%')) OR " +
             "LOWER(p.category) LIKE LOWER (CONCAT('%', :keyword, '%'))")
     List<Product> searchProduct(String keyword);
+
+
+    @Query("""
+SELECT p
+FROM Product p
+WHERE LOWER(TRIM(p.city)) LIKE LOWER(CONCAT('%', :city, '%'))
+""")
+    List<Product> findByCitySafe(@Param("city") String city);
+
+    List<Product> findByCityIgnoreCaseAndCategoryIgnoreCase(String city, String category);
+
+
 
 
 }

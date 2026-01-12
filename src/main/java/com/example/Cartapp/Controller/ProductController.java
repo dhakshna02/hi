@@ -31,9 +31,21 @@ public List<Product> getProduct(){
     return service.getProduct();
 }
 
+//    @GetMapping("/products/home")
+//    public ResponseEntity<List<Product>> getHomeProducts(
+//            @RequestParam String city) {
+//
+//        String cleanCity = city.trim();
+//        List<Product> products = service.getProductsForHome(cleanCity);
+//        return ResponseEntity.ok(products);
+//    }
 
 
-@GetMapping("/product/{id}")
+
+
+
+
+    @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable  int id){
     Product pro = service.getProductById(id);
     if(pro != null)
@@ -58,6 +70,26 @@ public List<Product> getProduct(){
      }
  }
 
+
+    @GetMapping("/products/home")
+    public ResponseEntity<List<Product>> getHomeProducts(
+            @RequestParam String city,
+            @RequestParam(required = false) String category
+    ) {
+
+        System.out.println("CITY = " + city);
+        System.out.println("CATEGORY = " + category);
+
+        List<Product> products;
+
+        if (category != null && !category.trim().isEmpty()) {
+            products = service.getProductsByCityAndCategory(city.trim(), category.trim());
+        } else {
+            products = service.getProductsForHome(city.trim());
+        }
+
+        return ResponseEntity.ok(products);
+    }
 
 
     @GetMapping("/product/{productId}/image")

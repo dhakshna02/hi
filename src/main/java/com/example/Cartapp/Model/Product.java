@@ -2,18 +2,13 @@ package com.example.Cartapp.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Table(name = "product",uniqueConstraints = @UniqueConstraint(columnNames = "brand"))
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Product {
 
 
@@ -29,6 +24,9 @@ public class Product {
     private Date releaseDate;
     private Boolean productAvailable;
     private int stockQuantity;
+    @Column(name = "city")
+    private String city;
+
 
     public int getId() {
         return id;
@@ -124,6 +122,14 @@ public class Product {
 
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     private String imageName;
