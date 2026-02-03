@@ -133,6 +133,16 @@ public List<Product> getProduct(){
     return new ResponseEntity<>(produc,HttpStatus.OK);
     }
 
+    @PutMapping("/product/{id}/stock")
+    public ResponseEntity<String> reduceStock(
+            @PathVariable int id,
+            @RequestParam int quantity
+    ) {
+        service.reduceStock(id, quantity);
+        return ResponseEntity.ok("Stock updated");
+    }
+
+
 
 
 

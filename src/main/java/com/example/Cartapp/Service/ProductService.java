@@ -45,11 +45,48 @@ public class ProductService {
     }
 
     public Product updateProduct(int id, Product product, MultipartFile imageFile) throws IOException {
-     product.setImageName(imageFile.getOriginalFilename());
-     product.setImageType(imageFile.getContentType());
-     product.setImageData(imageFile.getBytes());
-     return repo.save(product);
-    }
+//     product.setImageName(imageFile.getOriginalFilename());
+//     product.setImageType(imageFile.getContentType());
+//     product.setImageData(imageFile.getBytes());
+//     return repo.save(product);
+
+
+
+            Product existing = repo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            // 🔹 STOCK LOGIC (IMPORTANT)
+            int updatedStock = product.getStockQuantity();
+
+            // 🔥 DELETE PRODUCT IF STOCK = 0
+            if (updatedStock <= 0) {
+                repo.deleteById(id);
+                return existing;
+            }
+
+            // 🔹 UPDATE FIELDS
+            existing.setName(product.getName());
+            existing.setBrand(product.getBrand());
+            existing.setDescription(product.getDescription());
+            existing.setPrice(product.getPrice());
+            existing.setCategory(product.getCategory());
+            existing.setReleaseDate(product.getReleaseDate());
+            existing.setCity(product.getCity());
+
+            existing.setStockQuantity(updatedStock);
+            existing.setProductAvailable(true);
+
+            // 🔹 IMAGE (KEEP SAME IMAGE IF NOT CHANGED)
+            if (imageFile != null && !imageFile.isEmpty()) {
+                existing.setImageName(imageFile.getOriginalFilename());
+                existing.setImageType(imageFile.getContentType());
+                existing.setImageData(imageFile.getBytes());
+            }
+
+            return repo.save(existing);
+        }
+
+
 
     public void deleteProduct(int id)  {
 
@@ -63,5 +100,24 @@ public class ProductService {
         return repo.searchProduct(keyword);
 
     }
+
+    public void reduceStock(int id, int quantity) {
+        Product product = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if (product.getStockQuantity() < quantity) {
+            throw new RuntimeException("Not enough stock");
+        }
+
+        int updatedStock = product.getStockQuantity() - quantity;
+        product.setStockQuantity(updatedStock);
+
+        if (updatedStock == 0) {
+            product.setProductAvailable(false);
+        }
+
+        repo.save(product);
+    }
+
 
 }
